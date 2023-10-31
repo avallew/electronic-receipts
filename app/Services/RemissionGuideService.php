@@ -43,7 +43,7 @@ class RemissionGuideService
 
                 $response = $electronicReceiptService->sendElectronicReceiptToSriFromReception($xmlSigned, $request->infoTributaria['ambiente']);
 
-                if ($response['estado'] == ElectronicReceiptService::responseSriTypeRecibida || $response['estado'] == ElectronicReceiptService::responseSriTypeEnProcesamiento) {
+                if ($response['estado'] == ElectronicReceiptService::responseSriTypeRecibida || $response['estado'] == ElectronicReceiptService::responseSriTypeEnProceso) {
                     $remissionGuideSignedNumber = $request->infoTributaria['estab'] . '-' . $request->infoTributaria['ptoEmi'] . '-' . $request->infoTributaria['secuencial'];
                     $pathRemissionGuide = ElectronicReceiptService::partialPathElecetronicReceipt . '/remission_guides';
                     if (!Storage::exists('public/remission_guides'))
@@ -58,7 +58,7 @@ class RemissionGuideService
 
                 $status = $verifyResponse['status'];
 
-                if ($status == ElectronicReceiptService::responseSriTypeAutorizado || $status == ElectronicReceiptService::responseSriTypeEnProcesamiento) {
+                if ($status == ElectronicReceiptService::responseSriTypeAutorizado || $status == ElectronicReceiptService::responseSriTypeEnProceso) {
                     $remissionGuidesFolder = 'remission_guides';
                     $notificationService = new NotificationService();
                     $jsonDataDecode = json_decode(json_encode($request->all()));

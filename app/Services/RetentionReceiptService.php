@@ -43,7 +43,7 @@ class RetentionReceiptService
 
                 $response = $electronicReceiptService->sendElectronicReceiptToSriFromReception($xmlSigned, $request->infoTributaria['ambiente']);
 
-                if ($response['estado'] == ElectronicReceiptService::responseSriTypeRecibida || $response['estado'] ==  ElectronicReceiptService::responseSriTypeEnProcesamiento) {
+                if ($response['estado'] == ElectronicReceiptService::responseSriTypeRecibida || $response['estado'] ==  ElectronicReceiptService::responseSriTypeEnProceso) {
                     $retentionReceiptSignedNumber = $request->infoTributaria['estab'] . '-' . $request->infoTributaria['ptoEmi'] . '-' . $request->infoTributaria['secuencial'];
                     $pathRetentionReceipt = ElectronicReceiptService::partialPathElecetronicReceipt . '/retention_receipt';
                     if (!Storage::exists('public/retention_receipt'))
@@ -58,7 +58,7 @@ class RetentionReceiptService
 
                 $status = $verifyResponse['status'];
 
-                if ($status == ElectronicReceiptService::responseSriTypeAutorizado || $status == ElectronicReceiptService::responseSriTypeEnProcesamiento) {
+                if ($status == ElectronicReceiptService::responseSriTypeAutorizado || $status == ElectronicReceiptService::responseSriTypeEnProceso) {
                     $retentionReceiptsFolder = 'retention_receipt';
                     $notificationService = new NotificationService();
                     $jsonDataDecode = json_decode(json_encode($request->all()));

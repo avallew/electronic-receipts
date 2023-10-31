@@ -42,7 +42,7 @@ class DebitNoteService
 
                 $response = $electronicReceiptService->sendElectronicReceiptToSriFromReception($xmlSigned, $request->infoTributaria['ambiente']);
 
-                if ($response['estado'] == ElectronicReceiptService::responseSriTypeRecibida || $response['estado'] == ElectronicReceiptService::responseSriTypeEnProcesamiento) {
+                if ($response['estado'] == ElectronicReceiptService::responseSriTypeRecibida || $response['estado'] == ElectronicReceiptService::responseSriTypeEnProceso) {
                     $debitNoteSignedNumber = $request->infoTributaria['estab'] . '-' . $request->infoTributaria['ptoEmi'] . '-' . $request->infoTributaria['secuencial'];
                     $pathDebitNotes = ElectronicReceiptService::partialPathElecetronicReceipt . '/debit_notes';
                     if (!Storage::exists('public/debit_notes'))
@@ -57,7 +57,7 @@ class DebitNoteService
 
                 $status = $verifyResponse['status'];
 
-                if ($status == ElectronicReceiptService::responseSriTypeAutorizado || $status == ElectronicReceiptService::responseSriTypeEnProcesamiento) {
+                if ($status == ElectronicReceiptService::responseSriTypeAutorizado || $status == ElectronicReceiptService::responseSriTypeEnProceso) {
                     $debitNotesFolder = 'debit_notes';
                     $notificationService = new NotificationService();
                     $jsonDataDecode = json_decode(json_encode($request->all()));

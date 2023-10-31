@@ -48,7 +48,7 @@ class InvoiceService
 
                 $response = $electronicReceiptService->sendElectronicReceiptToSriFromReception($xmlSigned, $request->infoTributaria['ambiente']);
 
-                if ($response['estado'] == ElectronicReceiptService::responseSriTypeRecibida || $response['estado'] ==  ElectronicReceiptService::responseSriTypeEnProcesamiento) {
+                if ($response['estado'] == ElectronicReceiptService::responseSriTypeRecibida || $response['estado'] ==  ElectronicReceiptService::responseSriTypeEnProceso) {
                     $invoiceSignedNumber = $request->infoTributaria['estab'] . '-' . $request->infoTributaria['ptoEmi'] . '-' . $request->infoTributaria['secuencial'];
                     $pathInvoices = ElectronicReceiptService::partialPathElecetronicReceipt . '/invoices';
                     if (!Storage::exists('public/invoices'))
@@ -63,7 +63,7 @@ class InvoiceService
 
                 $status = $verifyResponse['status'];
 
-                if ($status == ElectronicReceiptService::responseSriTypeAutorizado || $status == ElectronicReceiptService::responseSriTypeNoAutorizado || $status == ElectronicReceiptService::responseSriTypeEnProcesamiento) {
+                if ($status == ElectronicReceiptService::responseSriTypeAutorizado || $status == ElectronicReceiptService::responseSriTypeNoAutorizado || $status == ElectronicReceiptService::responseSriTypeEnProceso) {
                     $invoicesFolder = 'invoices';
                     $notificationService = new NotificationService();
                     $jsonDataDecode = json_decode(json_encode($request->all()));

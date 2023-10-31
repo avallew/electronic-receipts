@@ -45,7 +45,7 @@ class PurchaseLiquidationService
 
                 $response = $electronicReceiptService->sendElectronicReceiptToSriFromReception($xmlSigned, $request->infoTributaria['ambiente']);
 
-                if ($response['estado'] == ElectronicReceiptService::responseSriTypeRecibida || $response['estado'] ==  ElectronicReceiptService::responseSriTypeEnProcesamiento) {
+                if ($response['estado'] == ElectronicReceiptService::responseSriTypeRecibida || $response['estado'] ==  ElectronicReceiptService::responseSriTypeEnProceso) {
                     $purchaseLiquidationSignedNumber = $request->infoTributaria['estab'] . '-' . $request->infoTributaria['ptoEmi'] . '-' . $request->infoTributaria['secuencial'];
                     $pathPurchaseLiquidation = ElectronicReceiptService::partialPathElecetronicReceipt . '/purchase_liquidation';
                     if (!Storage::exists('public/purchase_liquidation'))
@@ -60,7 +60,7 @@ class PurchaseLiquidationService
 
                 $status = $verifyResponse['status'];
 
-                if ($status == ElectronicReceiptService::responseSriTypeAutorizado || $status == ElectronicReceiptService::responseSriTypeEnProcesamiento) {
+                if ($status == ElectronicReceiptService::responseSriTypeAutorizado || $status == ElectronicReceiptService::responseSriTypeEnProceso) {
                     $purchaseLiquidationsFolder = 'purchase_liquidation';
                     $notificationService = new NotificationService();
                     $jsonDataDecode = json_decode(json_encode($request->all()));

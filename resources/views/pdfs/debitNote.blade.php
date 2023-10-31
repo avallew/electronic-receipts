@@ -7,12 +7,13 @@
 </head>
 
 <body>
+    {{-- HEADER --}}
     <table class="w-100">
         <td class="w-50">
             <img src="{{ env('URL_IMAGE') }}" alt="" class="logo" />
         </td>
         <td class="w-50">
-            <h1 class="text-right">FACTURA</h1>
+            <h1 class="text-right">NOTA DE DÉBITO</h1>
             <div class="text-right">
                 <div class="w-100">
                     <p class="inline">No.</p>
@@ -115,6 +116,142 @@
         </td>
     </table>
     <div class="divider"></div>
+    {{-- BODY --}}
+
+    <table>
+        <tr>
+            <td class="w-70 text-base td-align-top">
+                <p>
+                <table>
+                    <tr>
+                        <td class="w-70 text-base td-align-top">
+                            <p>
+                                <span class="semi-bold">Razón Social / Nombres y Apellidos:</span>
+                                {{ $data->infoNotaDebito->razonSocialComprador }}
+                            </p>
+                            <p>
+                                <span
+                                    class="semi-bold">Dirección:</span>{{ $data->infoNotaDebito->dirEstablecimiento }}
+                            </p>
+                            <p><span
+                                    class="semi-bold">Identificación:</span>{{ $data->infoNotaDebito->identificacionComprador }}
+                            </p>
+                            <p><span class="semi-bold">Fecha
+                                    Emisión:</span>{{ $data->infoNotaDebito->fechaEmisionDocSustento }}</p>
+                            <p>
+                                <span class="semi-bold">Comprobante que se modifica:</span>
+                                {{ $data->infoNotaDebito->numDocModificado }}
+                            </p>
+                            <p>
+                                <span class="semi-bold">Fecha de Emisión (Comprobante a
+                                    modificar):</span>{{ $data->infoNotaDebito->fechaEmisionDocSustento }}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table class="table-details">
+        <thead>
+            <tr>
+                <th>RAZÓN DE LA MODIFICACIÓN</th>
+                <th>VALOR DE LA MODIFICACIÓN</th>
+            </tr>
+            <tr>
+                <td colspan="6">
+                    <div class="divider"></div>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($data->motivos as $motivo): ?>
+            <tr>
+                <td class="semi-bold">{{ $motivo->razon }}</td>
+                <td class="semi-bold">{{ $motivo->valor }}</td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <table class="w-100">
+        <td class="w-50">
+            <table class="table-subdetails">
+                <thead>
+                    <tr>
+                        <th class="text-base text-normal">Forma de pago</th>
+                        <th class="text-base text-normal">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($data->infoNotaDebito->pagos as $pago): ?>
+                    <tr>
+                        <td class="semi-bold">{{ $pago->formaPago }}</td>
+                        <td class="semi-bold">{{ $pago->total }}</td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php foreach ($data->infoAdicional as $adicional): ?>
+            <p class="text-base mt-3">{{ $adicional->nombre }}:</p>
+            <p class="semi-bold">{{ $adicional->value }}</p>
+            <?php endforeach; ?>
+        </td>
+        <td class="w-50 td-align-top text-right">
+            <table class="w-100">
+
+                <?php foreach ($data->infoNotaDebito->impuestos as $impuesto) {
+                    
+                }: ?>
+                <?php endforeach; ?>
+//TODO:DESDE AQUI
+                <tr>
+                    <td class="semi-bold">SUBTOTAL NO OBJETO DE IVA</td>
+
+                    <?php foreach ($data->infoNotaDebito->impuestos as $impuesto):?>
+                    <?php if ($impuesto->codigoPorcentaje=="6"):?>
+                    <td>{{ $impuesto->baseImponible }}</td>
+                    <?php else:?>
+                    <td>0</td>
+                    <?php endif;?>
+                    <?php endforeach; ?>
+
+                </tr>
+                <tr>
+                    <td class="semi-bold">SUBTOTAL 0%</td>
+                    <td>{{ $data->infoNotaDebito->impuestos[0]->baseImponible }}</td>
+                </tr>
+                <tr>
+                    <td class="semi-bold">IVA 12%</td>
+                    <td>
+                        <?php foreach ($data->infoNotaDebito->impuestos as $impuesto):{
+                            if ($impuesto == "1")
+                            $data->infoNotaDebito->impuestos[0]->valor;
+                        }?>
+                        <?php endforeach; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="semi-bold">Subtotal sin impuestos</td>
+                    <td>{{ $data->infoNotaDebito->totalSinImpuestos }}</td>
+                </tr>
+                <tr>
+                    <td class="semi-bold">Descuento</td>
+                    <td>{{ $data->infoNotaDebito->totalDescuento }}</td>
+                </tr>
+                <tr>
+                    <td class="semi-bold">Valor Total</td>
+                    <td>{{ $data->infoNotaDebito->importeTotal }}</td>
+                </tr>
+            </table>
+        </td>
+    </table>
+
+
+
+
+    {{-- END BODY --}}
     <table class="w-100 mb-1 mt-1">
         <tr>
             <td class="w-70 text-base">

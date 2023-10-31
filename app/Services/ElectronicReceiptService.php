@@ -21,7 +21,7 @@ class ElectronicReceiptService
 {
     const responseSriTypeAutorizado = 'AUTORIZADO';
     const responseSriTypeNoAutorizado = 'NO AUTORIZADO';
-    const responseSriTypeEnProcesamiento = 'EN PROCESAMIENTO';
+    const responseSriTypeEnProceso = 'EN PROCESO';
     const responseSriTypeRecibida = 'RECIBIDA';
     const responseSriTypeDevuelta = 'DEVUELTA';
 
@@ -112,36 +112,35 @@ class ElectronicReceiptService
                     foreach ($dataError as $error) {
                         $verifyArrayResponse['errors'][] = iconv("ISO-8859-1", "UTF-8", $error['informacionAdicional']);
                     }
-                // $verifyArrayResponse['error'] = $dataError['mensaje'];
                 return $verifyArrayResponse;
 
                 $verifyArrayResponse['status'] = 'NO AUTORIZADO';
                 return $verifyArrayResponse;
+            } else if ($response['autorizaciones']['autorizacion']['estado'] == 'EN PROCESO') {
+                $verifyArrayResponse['status'] = 'EN PROCESO';
+                return $verifyArrayResponse;
             }
         if (array_key_exists('estado', $response) && $response['estado'] == 'DEVUELTA') {
             $dataError = $response['comprobantes']['comprobante']['mensajes']['mensaje'];
-            // if ($dataError['identificador'] != '45') {
-            //     $verifyArrayResponse['status'] = 'EN PROCESAMIENTO';
-            //     return $verifyArrayResponse;
-            // } else {
             $verifyArrayResponse['status'] = 'DEVUELTA';
             if (array_key_exists('informacionAdicional', $dataError)) {
                 $verifyArrayResponse['errors'][] = iconv("ISO-8859-1", "UTF-8", $dataError['informacionAdicional']);
             } else {
                 $verifyArrayResponse['errors'][] = iconv("ISO-8859-1", "UTF-8", $dataError['mensaje']);
-                // foreach ($dataError as $key =>$error) {
-                //     $verifyArrayResponse['errors'][] = iconv("ISO-8859-1", "UTF-8", ($key=='informacionAdicional')? $error['informacionAdicional']:$error['mensaje']);
-                // }
-                // $verifyArrayResponse['error'] = $dataError['mensaje'];
             }
             return $verifyArrayResponse;
         }
-        // }
     }
 
     public function generatePdfElectronicReceipt($data, $number, $electronicReceiptType)
     {
-        $pdf = SnappyPdf::loadView('pdfs.' . $electronicReceiptType, compact('data'));
+        $footerHtml = view()->make('pdfs.footer')->render();
+        $pdf = SnappyPdf::loadView('pdfs.' . $electronicReceiptType, compact('data'))
+            ->setOption('margin-top', '5mm')
+            ->setOption('margin-left', '0mm')
+            ->setOption('margin-right', '0mm')
+            ->setOption('margin-bottom', '10mm')
+            ->setOption('footer-html', $footerHtml);
         $pdfFile = $pdf->download('Electronic_Receipt.pdf');
         return $pdfFile->getContent();
     }
